@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
         uriBuilder.appendQueryParameter("from-date", "2020-01-01");
-        uriBuilder.appendQueryParameter("api-key", "test");
+        uriBuilder.appendQueryParameter("api-key", "e9ba95fd-05ac-436c-a151-0ea936ed3a0f");
         Log.d("TAGGED", uriBuilder.toString() + " is url");
         return new NewsLoader(this, uriBuilder.toString());
     }
