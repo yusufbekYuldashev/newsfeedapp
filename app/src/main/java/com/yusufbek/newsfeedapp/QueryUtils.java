@@ -59,8 +59,6 @@ class QueryUtils {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setReadTimeout(10000 /* milliseconds */);
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
-//            urlConnection.setDoOutput(true);
-//            urlConnection.setDoInput(true);
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
@@ -71,7 +69,7 @@ class QueryUtils {
                 Log.e("TAGGED", "Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
-            Log.e("TAGGED", "Problem retrieving the earthquake JSON results.", e);
+            Log.e("TAGGED", "Problem retrieving the news JSON results.", e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -90,11 +88,9 @@ class QueryUtils {
             BufferedReader reader = new BufferedReader(inputStreamReader);
             String line;
             while ((line = reader.readLine()) != null) {
-                Log.d("TAGGED", "line: " + line);
                 output.append(line);
             }
         }
-        Log.d("TAGGED", "output: " + output);
         return output.toString();
     }
 
@@ -107,7 +103,8 @@ class QueryUtils {
 
         try {
             JSONObject baseJsonResponse = new JSONObject(newsJSON);
-            JSONArray newsArray = baseJsonResponse.getJSONArray("results");
+            JSONObject response = baseJsonResponse.getJSONObject("response");
+            JSONArray newsArray = response.getJSONArray("results");
 
             for (int i = 0; i < newsArray.length(); i++) {
                 JSONObject currentNews = newsArray.getJSONObject(i);
@@ -122,7 +119,7 @@ class QueryUtils {
             }
 
         } catch (JSONException e) {
-            Log.e("TAGGED", "Problem parsing the earthquake JSON results", e);
+            Log.e("TAGGED", "Problem parsing the news JSON results", e);
         }
 
         return newsItems;

@@ -1,11 +1,11 @@
 package com.yusufbek.newsfeedapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<NewsItem>> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<NewsItem>>, NewsRecyclerAdapter.ClickCallback {
 
     private static final String NEWS_REQUEST_URL = "https://content.guardianapis.com/search?";
     private static final int NEWS_LOADER_ID = 1;
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
 
         newsRecyclerView = findViewById(R.id.activity_main_recycler_view);
-        mAdapter = new NewsRecyclerAdapter(this, new ArrayList<NewsItem>());
+        mAdapter = new NewsRecyclerAdapter(this, new ArrayList<NewsItem>(), this);
         newsRecyclerView.setAdapter(mAdapter);
 
         mEmptyStateTextView = findViewById(R.id.no_data_found_text_view);
@@ -58,6 +58,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
+    @Override
+    public void onCLick(String itemUrl) {
+        Uri newsUri = Uri.parse(itemUrl);
+        Intent intent = new Intent(Intent.ACTION_VIEW, newsUri);
+        startActivity(intent);
+    }
+
     @NonNull
     @Override
     public Loader<List<NewsItem>> onCreateLoader(int id, @Nullable Bundle args) {
@@ -66,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         uriBuilder.appendQueryParameter("from-date", "2020-01-01");
         uriBuilder.appendQueryParameter("api-key", "e9ba95fd-05ac-436c-a151-0ea936ed3a0f");
-        Log.d("TAGGED", uriBuilder.toString() + " is url");
         return new NewsLoader(this, uriBuilder.toString());
     }
 
